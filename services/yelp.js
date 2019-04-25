@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const YELP_API_KEY = "<YOUR_API_KEY>";
+const YELP_API_KEY = "";
 
 const api = axios.create({
   baseURL: "https://api.yelp.com/v3",
@@ -14,7 +14,7 @@ const getCoffeeShops = userLocation => {
     .get("/businesses/search", {
       params: {
         limit: 10,
-        categories: "coffee",
+        categories: "coffee,coffeeroasteries,coffeeshops",
         ...userLocation
       }
     })
