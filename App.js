@@ -2,6 +2,7 @@ import React from "react";
 import { Text, SafeAreaView } from "react-native";
 import { Location, Permissions } from "expo";
 import Map from "./components/Map";
+import YelpService from "./services/yelp";
 
 // A placeholder until we get our own location
 const region = {
@@ -25,12 +26,20 @@ export default class App extends React.Component {
     this.getLocationAsync();
   }
 
+  getCoffeeShops = async () => {
+    const { latitude, longitude } = this.state.region;
+    const userLocation = { latitude, longitude };
+    const coffeeShops = await YelpService.getCoffeeShops(userLocation);
+    this.setState({ coffeeShops });
+  };
+
   getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== "granted") {
       this.setState({
         errorMessage: "Permission to access location was denied"
       });
+      await this.getCoffeeShops();
     }
 
     let location = await Location.getCurrentPositionAsync({});

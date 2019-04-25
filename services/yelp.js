@@ -14,7 +14,7 @@ const getCoffeeShops = userLocation => {
     .get("/businesses/search", {
       params: {
         limit: 10,
-        categories: "coffee,coffeeroasteries,coffeeshops",
+        categories: "coffee",
         ...userLocation
       }
     })
