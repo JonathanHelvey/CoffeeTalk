@@ -1,21 +1,61 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React from "react";
+import { Text, SafeAreaView } from "react-native";
+import { Location, Permissions } from "expo";
+import Map from "./components/Map";
+
+// A placeholder until we get our own location
+const region = {
+  latitude: 41.8781,
+  longitude: -87.6298,
+  latitudeDelta: 0.0922,
+  longitudeDelta: 0.0421
+};
+const deltas = {
+  latitudeDelta: 0.0922,
+  longitudeDelta: 0.0421
+};
 
 export default class App extends React.Component {
+  state = {
+    region: null,
+    coffeeShops: []
+  };
+
+  componentWillMount() {
+    this.getLocationAsync();
+  }
+
+  getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== "granted") {
+      this.setState({
+        errorMessage: "Permission to access location was denied"
+      });
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    const region = {
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+      ...deltas
+    };
+    await this.setState({ region });
+  };
+
   render() {
     return (
-      <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
-      </View>
+      <SafeAreaView style={styles.container}>
+        <Map region={region} places={this.state.coffeeShops} />
+      </SafeAreaView>
     );
   }
 }
 
-const styles = StyleSheet.create({
+const styles = {
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center"
+  }
+};
